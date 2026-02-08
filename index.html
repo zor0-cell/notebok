@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="https://avatars.mds.yandex.net/i?id=500318e2ce57b0542c2babc4d946ed4ff50aa0dc-3344187-images-thumbs&n=13">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Сброс и базовые стили */
         * {
@@ -1048,6 +1050,249 @@
             }
         }
 
+        /* Новые стили для дополнительных функций */
+        
+        /* Таймлайн прогресса */
+        .timeline {
+            margin: 20px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            background: var(--bg-surface);
+            padding: 12px;
+            border-radius: var(--radius);
+        }
+
+        /* Графики */
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin: 20px 0;
+        }
+
+        /* Виджеты */
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .widget {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .widget-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .widget-content {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Квиз */
+        .quiz-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-option {
+            background: var(--bg-surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Шаблоны */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .template-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .template-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .template-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .template-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Цели и привычки */
+        .goal-item {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .goal-progress {
+            height: 6px;
+            background: var(--bg-surface);
+            border-radius: 3px;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+
+        .goal-progress-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Напоминания */
+        .reminder-item {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--warning);
+        }
+
+        /* Экспорт/Импорт */
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-surface);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .export-option:hover {
+            background: var(--border);
+        }
+
+        /* Аналитика */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .analytics-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+
         /* Хелперы */
         .hidden {
             display: none !important;
@@ -1068,6 +1313,21 @@
         /* Скрываем скроллбар */
         .view::-webkit-scrollbar {
             display: none;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .widget-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -1091,16 +1351,20 @@
                 <button class="header-btn" id="searchBtn">
                     <i class="fas fa-search"></i>
                 </button>
+                <button class="header-btn" id="notificationsBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge hidden">0</span>
+                </button>
             </div>
         </div>
 
         <!-- Основной контент -->
         <div class="main-content">
-            <!-- Главная -->
+            <!-- Главная с виджетами -->
             <div class="view active" id="homeView">
                 <div class="card welcome-card">
                     <h2 id="greetingText">Добрый день!</h2>
-                    <p>Управляйте всеми канспектами вашей жизни</p>
+                    <p>Управляйте всеми аспектами вашей жизни</p>
                 </div>
 
                 <div class="stats-grid">
@@ -1122,6 +1386,43 @@
                     </div>
                 </div>
 
+                <!-- Виджеты прогресса -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Прогресс сегодня</div>
+                    </div>
+                    <div class="widget-grid">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Задачи</div>
+                                <i class="fas fa-tasks" style="color: var(--primary);"></i>
+                            </div>
+                            <div class="widget-content" id="taskProgress">0/0</div>
+                        </div>
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Привычки</div>
+                                <i class="fas fa-fire" style="color: var(--warning);"></i>
+                            </div>
+                            <div class="widget-content" id="habitProgress">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Таймлайн прогресса -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Таймлайн прогресса</div>
+                        <button class="btn btn-secondary btn-sm" id="viewTimelineBtn">
+                            <i class="fas fa-expand-alt"></i>
+                        </button>
+                    </div>
+                    <div class="timeline" id="progressTimeline">
+                        <!-- Таймлайн будет генерироваться динамически -->
+                    </div>
+                </div>
+
+                <!-- Модули -->
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Модули</div>
@@ -1151,23 +1452,23 @@
                             </div>
                             <div class="module-text">Финансы</div>
                         </button>
-                        <button class="module-btn" data-module="diary">
+                        <button class="module-btn" data-module="goals">
                             <div class="module-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">
-                                <i class="fas fa-feather-alt"></i>
+                                <i class="fas fa-bullseye"></i>
                             </div>
-                            <div class="module-text">Дневник</div>
+                            <div class="module-text">Цели</div>
                         </button>
-                        <button class="module-btn" data-module="settings">
+                        <button class="module-btn" data-module="analytics">
                             <div class="module-icon" style="background: linear-gradient(135deg, #64748b, #94a3b8);">
-                                <i class="fas fa-cog"></i>
+                                <i class="fas fa-chart-line"></i>
                             </div>
-                            <div class="module-text">Настройки</div>
+                            <div class="module-text">Аналитика</div>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Задачи -->
+            <!-- Задачи с таймлайном -->
             <div class="view" id="tasksView">
                 <div class="card">
                     <div class="card-header">
@@ -1181,6 +1482,7 @@
                         <button class="task-tab active" data-type="daily">Ежедневные</button>
                         <button class="task-tab" data-type="monthly">Месячные</button>
                         <button class="task-tab" data-type="completed">Выполненные</button>
+                        <button class="task-tab" data-type="timeline">Таймлайн</button>
                     </div>
                     <div class="task-list" id="taskList">
                         <!-- Задачи будут добавляться динамически -->
@@ -1193,6 +1495,10 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Календарь</div>
+                        <button class="btn btn-secondary" id="addReminderBtn">
+                            <i class="fas fa-bell"></i>
+                            Напоминание
+                        </button>
                     </div>
                     <div class="calendar-header">
                         <div class="calendar-nav">
@@ -1217,15 +1523,21 @@
                 </div>
             </div>
 
-            <!-- Учеба -->
+            <!-- Учеба с квизом -->
             <div class="view" id="studyView">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Конспекты</div>
-                        <button class="btn btn-primary" id="addNoteBtn">
-                            <i class="fas fa-plus"></i>
-                            Добавить
-                        </button>
+                        <div>
+                            <button class="btn btn-secondary" id="startQuizBtn">
+                                <i class="fas fa-question-circle"></i>
+                                Квиз
+                            </button>
+                            <button class="btn btn-primary" id="addNoteBtn">
+                                <i class="fas fa-plus"></i>
+                                Добавить
+                            </button>
+                        </div>
                     </div>
                     <div class="subject-selector" id="subjectSelector">
                         <!-- Предметы будут добавляться динамически -->
@@ -1271,70 +1583,106 @@
                 </div>
             </div>
 
-            <!-- Дневник -->
-            <div class="view" id="diaryView">
+            <!-- Цели и привычки -->
+            <div class="view" id="goalsView">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Настроение дня</div>
+                        <div class="card-title">Мои цели</div>
+                        <button class="btn btn-primary" id="addGoalBtn">
+                            <i class="fas fa-plus"></i>
+                            Добавить цель
+                        </button>
                     </div>
-                    <div class="mood-selector" id="moodSelector">
-                        <button class="mood-btn active" data-mood="happy">
-                            <div class="mood-emoji">😊</div>
-                            <div class="mood-label">Хорошо</div>
-                        </button>
-                        <button class="mood-btn" data-mood="neutral">
-                            <div class="mood-emoji">😐</div>
-                            <div class="mood-label">Нормально</div>
-                        </button>
-                        <button class="mood-btn" data-mood="sad">
-                            <div class="mood-emoji">😢</div>
-                            <div class="mood-label">Грустно</div>
-                        </button>
-                        <button class="mood-btn" data-mood="stressed">
-                            <div class="mood-emoji">😫</div>
-                            <div class="mood-label">Стресс</div>
-                        </button>
+                    <div id="goalsList">
+                        <!-- Цели будут добавляться динамически -->
                     </div>
                 </div>
 
-                <div class="diary-editor">
-                    <textarea class="diary-textarea" id="diaryText" 
-                              placeholder="Что у вас на уме? Запишите свои мысли и идеи..."></textarea>
-                    <div class="diary-actions">
-                        <button class="btn btn-primary" id="saveDiaryBtn">
-                            <i class="fas fa-save"></i>
-                            Сохранить
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Привычки</div>
+                        <button class="btn btn-primary" id="addHabitBtn">
+                            <i class="fas fa-plus"></i>
+                            Добавить привычку
                         </button>
-                        <button class="btn btn-secondary" id="clearDiaryBtn">
-                            <i class="fas fa-eraser"></i>
-                            Очистить
-                        </button>
+                    </div>
+                    <div id="habitsList">
+                        <!-- Привычки будут добавляться динамически -->
                     </div>
                 </div>
             </div>
 
-            <!-- Настройки -->
-            <div class="view" id="settingsView">
+            <!-- Аналитика и статистика -->
+            <div class="view" id="analyticsView">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Настройки</div>
+                        <div class="card-title">Статистика продуктивности</div>
                     </div>
-                    <div class="settings-list">
-                        <div class="settings-item" data-action="export">
-                            <div class="settings-label">Экспорт данных</div>
-                            <i class="fas fa-download"></i>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="stat-number" id="weeklyTasks">0</div>
+                            <div class="stat-label">Задач на неделе</div>
                         </div>
-                        <div class="settings-item" data-action="import">
-                            <div class="settings-label">Импорт данных</div>
-                            <i class="fas fa-upload"></i>
+                        <div class="analytics-card">
+                            <div class="stat-number" id="notesCreated">0</div>
+                            <div class="stat-label">Конспектов создано</div>
                         </div>
-                        <div class="settings-item" data-action="backup">
-                            <div class="settings-label">Создать резервную копию</div>
-                            <i class="fas fa-cloud"></i>
+                        <div class="analytics-card">
+                            <div class="stat-number" id="goalCompletion">0%</div>
+                            <div class="stat-label">Выполнение целей</div>
                         </div>
-                        <div class="settings-item" data-action="clear">
-                            <div class="settings-label">Очистить все данные</div>
-                            <i class="fas fa-trash"></i>
+                        <div class="analytics-card">
+                            <div class="stat-number" id="streakDays">0</div>
+                            <div class="stat-label">Дней подряд</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Графики</div>
+                        <select class="form-select" id="chartType" style="width: auto;">
+                            <option value="tasks">Задачи</option>
+                            <option value="notes">Конспекты</option>
+                            <option value="finance">Финансы</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="analyticsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Экспорт данных</div>
+                    </div>
+                    <div class="export-options">
+                        <div class="export-option" data-export="pdf">
+                            <i class="fas fa-file-pdf" style="color: #e74c3c;"></i>
+                            <div>
+                                <div style="font-weight: 500;">Экспорт в PDF</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">
+                                    Все данные в формате PDF
+                                </div>
+                            </div>
+                        </div>
+                        <div class="export-option" data-export="text">
+                            <i class="fas fa-file-alt" style="color: #3498db;"></i>
+                            <div>
+                                <div style="font-weight: 500;">Экспорт в текст</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">
+                                    Все данные в текстовом формате
+                                </div>
+                            </div>
+                        </div>
+                        <div class="export-option" data-export="csv">
+                            <i class="fas fa-file-csv" style="color: #27ae60;"></i>
+                            <div>
+                                <div style="font-weight: 500;">Экспорт в CSV</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">
+                                    Для Excel и таблиц
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1355,13 +1703,13 @@
                 <i class="fas fa-calendar"></i>
                 <span>Календарь</span>
             </button>
-            <button class="tab-btn" data-view="finance">
-                <i class="fas fa-wallet"></i>
-                <span>Финансы</span>
+            <button class="tab-btn" data-view="goals">
+                <i class="fas fa-bullseye"></i>
+                <span>Цели</span>
             </button>
-            <button class="tab-btn" data-view="diary">
-                <i class="fas fa-feather-alt"></i>
-                <span>Дневник</span>
+            <button class="tab-btn" data-view="analytics">
+                <i class="fas fa-chart-line"></i>
+                <span>Аналитика</span>
             </button>
         </div>
     </div>
@@ -1422,6 +1770,16 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Выберите шаблон</label>
+                    <select class="form-select" id="noteTemplate">
+                        <option value="">Без шаблона</option>
+                        <option value="lecture">Лекция</option>
+                        <option value="book">Книга</option>
+                        <option value="meeting">Встреча</option>
+                        <option value="idea">Идея</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Предмет</label>
                     <input type="text" class="form-input" id="noteSubject" placeholder="Математика, Физика...">
@@ -1515,33 +1873,195 @@
         </div>
     </div>
 
+    <!-- Модалка квиза -->
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Квиз по конспектам</h3>
+                <button class="modal-close" data-modal="quizModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="quizContent">
+                    <!-- Квиз будет генерироваться динамически -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка для добавления цели -->
+    <div class="modal-overlay" id="addGoalModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Новая цель</h3>
+                <button class="modal-close" data-modal="addGoalModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Название цели</label>
+                    <input type="text" class="form-input" id="goalTitle" placeholder="Научиться играть на гитаре">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Тип цели</label>
+                    <select class="form-select" id="goalType">
+                        <option value="daily">Ежедневная</option>
+                        <option value="weekly">Недельная</option>
+                        <option value="monthly">Месячная</option>
+                        <option value="yearly">Годовая</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Целевое значение</label>
+                    <input type="number" class="form-input" id="goalTarget" placeholder="30">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Текущий прогресс</label>
+                    <input type="number" class="form-input" id="goalCurrent" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Дата завершения</label>
+                    <input type="date" class="form-input" id="goalDeadline">
+                </div>
+                <button class="btn btn-primary" id="saveGoalBtn" style="width: 100%;">
+                    <i class="fas fa-save"></i>
+                    Сохранить цель
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка для добавления привычки -->
+    <div class="modal-overlay" id="addHabitModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Новая привычка</h3>
+                <button class="modal-close" data-modal="addHabitModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Название привычки</label>
+                    <input type="text" class="form-input" id="habitTitle" placeholder="Читать 30 минут в день">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Частота</label>
+                    <select class="form-select" id="habitFrequency">
+                        <option value="daily">Ежедневно</option>
+                        <option value="weekly">Еженедельно</option>
+                        <option value="monthly">Ежемесячно</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Целевое количество дней</label>
+                    <input type="number" class="form-input" id="habitTarget" placeholder="30">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Напоминания</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="time" class="form-input" id="habitReminderTime">
+                        <select class="form-select" id="habitReminderDays">
+                            <option value="everyday">Каждый день</option>
+                            <option value="weekdays">Будние</option>
+                            <option value="weekends">Выходные</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="saveHabitBtn" style="width: 100%;">
+                    <i class="fas fa-save"></i>
+                    Сохранить привычку
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка напоминания -->
+    <div class="modal-overlay" id="reminderModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Новое напоминание</h3>
+                <button class="modal-close" data-modal="reminderModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Текст напоминания</label>
+                    <input type="text" class="form-input" id="reminderText" placeholder="Совещание в 15:00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Дата и время</label>
+                    <input type="datetime-local" class="form-input" id="reminderDateTime">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Повторение</label>
+                    <select class="form-select" id="reminderRepeat">
+                        <option value="none">Не повторять</option>
+                        <option value="daily">Ежедневно</option>
+                        <option value="weekly">Еженедельно</option>
+                        <option value="monthly">Ежемесячно</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="saveReminderBtn" style="width: 100%;">
+                    <i class="fas fa-save"></i>
+                    Сохранить напоминание
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Уведомления -->
     <div id="notificationContainer"></div>
 
     <script>
-        // Smart Life Organizer App
+        // Smart Life Organizer App с расширенными функциями
         class SmartLifeOrganizer {
             constructor() {
                 // Инициализация данных
                 this.data = {
-                    tasks: [],          // Задачи (ежедневные и месячные)
-                    notes: [],          // Конспекты
-                    transactions: [],   // Финансовые операции
-                    diary: [],          // Дневниковые записи
-                    categories: {       // Категории расходов/доходов
-                        expense: [
-                            { id: 'food', name: 'Еда', icon: '🍔', color: '#ef4444' },
-                            { id: 'transport', name: 'Транспорт', icon: '🚗', color: '#f59e0b' },
-                            { id: 'shopping', name: 'Покупки', icon: '🛍️', color: '#8b5cf6' },
-                            { id: 'entertainment', name: 'Развлечения', icon: '🎮', color: '#ec4899' },
-                            { id: 'education', name: 'Образование', icon: '📚', color: '#3b82f6' },
-                            { id: 'other', name: 'Другое', icon: '📝', color: '#94a3b8' }
+                    tasks: [],
+                    notes: [],
+                    transactions: [],
+                    goals: [],
+                    habits: [],
+                    reminders: [],
+                    quizResults: [],
+                    templates: {
+                        note: [
+                            {
+                                id: 'lecture',
+                                name: 'Лекция',
+                                content: 'Тема:\nДата:\nПреподаватель:\n\nОсновные тезисы:\n1. \n2. \n3. \n\nКлючевые термины:\n\nВопросы для изучения:'
+                            },
+                            {
+                                id: 'book',
+                                name: 'Книга',
+                                content: 'Название книги:\nАвтор:\nГод издания:\n\nОсновные идеи:\n1. \n2. \n3. \n\nЦитаты:\n\nВыводы:'
+                            },
+                            {
+                                id: 'meeting',
+                                name: 'Встреча',
+                                content: 'Тема встречи:\nДата и время:\nУчастники:\n\nПовестка:\n1. \n2. \n3. \n\nРешения:\n\nДействия:'
+                            }
                         ],
-                        income: [
-                            { id: 'salary', name: 'Зарплата', icon: '💰', color: '#10b981' },
-                            { id: 'freelance', name: 'Фриланс', icon: '💼', color: '#10b981' },
-                            { id: 'gift', name: 'Подарок', icon: '🎁', color: '#10b981' },
-                            { id: 'other', name: 'Другое', icon: '📝', color: '#10b981' }
+                        task: [
+                            {
+                                id: 'workout',
+                                name: 'Тренировка',
+                                title: 'Тренировка',
+                                type: 'daily',
+                                priority: 'medium'
+                            },
+                            {
+                                id: 'study',
+                                name: 'Учеба',
+                                title: 'Заниматься учебой',
+                                type: 'daily',
+                                priority: 'high'
+                            }
                         ]
                     }
                 };
@@ -1550,6 +2070,8 @@
                 this.currentTaskType = 'daily';
                 this.currentMood = 'happy';
                 this.currentDate = new Date();
+                this.notificationCount = 0;
+                this.reminderInterval = null;
                 
                 // Инициализация
                 this.init();
@@ -1569,17 +2091,30 @@
                 this.renderCalendar();
                 this.renderNotes();
                 this.renderTransactions();
+                this.renderGoals();
+                this.renderHabits();
+                this.renderProgressTimeline();
                 
                 // Установка сегодняшней даты
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('transactionDate').value = today;
                 document.getElementById('taskDueDate').value = today;
+                document.getElementById('goalDeadline').value = today;
+                
+                // Настройка напоминаний
+                this.setupReminders();
                 
                 // Обновление приветствия
                 this.updateGreeting();
+                
+                // Показать приветственное уведомление
+                setTimeout(() => {
+                    if (this.data.tasks.length === 0 && this.data.notes.length === 0) {
+                        this.showNotification('Добро пожаловать в Smart Life! Начните с добавления первой задачи или конспекта.', 'success');
+                    }
+                }, 1000);
             }
             
-            // Загрузка данных
             loadData() {
                 try {
                     const saved = localStorage.getItem('smart-life-data');
@@ -1588,21 +2123,26 @@
                         this.data.tasks = data.tasks || [];
                         this.data.notes = data.notes || [];
                         this.data.transactions = data.transactions || [];
-                        this.data.diary = data.diary || [];
+                        this.data.goals = data.goals || [];
+                        this.data.habits = data.habits || [];
+                        this.data.reminders = data.reminders || [];
+                        this.data.quizResults = data.quizResults || [];
                     }
                 } catch (error) {
                     console.log('Нет сохраненных данных или ошибка загрузки');
                 }
             }
             
-            // Сохранение данных
             saveData() {
                 try {
                     const data = {
                         tasks: this.data.tasks,
                         notes: this.data.notes,
                         transactions: this.data.transactions,
-                        diary: this.data.diary,
+                        goals: this.data.goals,
+                        habits: this.data.habits,
+                        reminders: this.data.reminders,
+                        quizResults: this.data.quizResults,
                         lastSaved: new Date().toISOString()
                     };
                     localStorage.setItem('smart-life-data', JSON.stringify(data));
@@ -1611,13 +2151,11 @@
                 }
             }
             
-            // Настройка UI
             setupUI() {
-                // Устанавливаем активную вкладку
                 this.switchView('home');
+                this.updateNotificationBadge();
             }
             
-            // Настройка обработчиков событий
             setupEventListeners() {
                 // Навигация по вкладкам
                 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1643,6 +2181,11 @@
                 // Кнопка поиска
                 document.getElementById('searchBtn').addEventListener('click', () => {
                     this.showModal('searchModal');
+                });
+                
+                // Кнопка уведомлений
+                document.getElementById('notificationsBtn').addEventListener('click', () => {
+                    this.showNotifications();
                 });
                 
                 // Добавление задачи
@@ -1684,6 +2227,11 @@
                     this.saveNote();
                 });
                 
+                // Шаблоны конспектов
+                document.getElementById('noteTemplate').addEventListener('change', (e) => {
+                    this.applyNoteTemplate(e.target.value);
+                });
+                
                 // Сохранение транзакции
                 document.getElementById('saveTransactionBtn').addEventListener('click', () => {
                     this.saveTransaction();
@@ -1699,35 +2247,60 @@
                     this.showModal('addTransactionModal');
                 });
                 
-                // Настроение
-                document.querySelectorAll('.mood-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const mood = e.currentTarget.dataset.mood;
-                        this.setMood(mood);
+                // Квиз
+                document.getElementById('startQuizBtn').addEventListener('click', () => {
+                    this.startQuiz();
+                });
+                
+                // Цели
+                document.getElementById('addGoalBtn').addEventListener('click', () => {
+                    this.showModal('addGoalModal');
+                });
+                
+                document.getElementById('saveGoalBtn').addEventListener('click', () => {
+                    this.saveGoal();
+                });
+                
+                // Привычки
+                document.getElementById('addHabitBtn').addEventListener('click', () => {
+                    this.showModal('addHabitModal');
+                });
+                
+                document.getElementById('saveHabitBtn').addEventListener('click', () => {
+                    this.saveHabit();
+                });
+                
+                // Напоминания
+                document.getElementById('addReminderBtn').addEventListener('click', () => {
+                    this.showModal('reminderModal');
+                });
+                
+                document.getElementById('saveReminderBtn').addEventListener('click', () => {
+                    this.saveReminder();
+                });
+                
+                // Экспорт данных
+                document.querySelectorAll('.export-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        const type = e.currentTarget.dataset.export;
+                        this.exportData(type);
                     });
                 });
                 
-                // Сохранение дневника
-                document.getElementById('saveDiaryBtn').addEventListener('click', () => {
-                    this.saveDiary();
+                // Аналитика - изменение типа графика
+                document.getElementById('chartType').addEventListener('change', () => {
+                    this.renderAnalyticsChart();
                 });
                 
-                // Очистка дневника
-                document.getElementById('clearDiaryBtn').addEventListener('click', () => {
-                    document.getElementById('diaryText').value = '';
+                // Таймлайн
+                document.getElementById('viewTimelineBtn').addEventListener('click', () => {
+                    this.switchView('tasks');
+                    this.switchTaskType('timeline');
                 });
                 
                 // Поиск
                 document.getElementById('searchInput').addEventListener('input', (e) => {
                     this.search(e.target.value);
-                });
-                
-                // Настройки
-                document.querySelectorAll('.settings-item').forEach(item => {
-                    item.addEventListener('click', (e) => {
-                        const action = e.currentTarget.dataset.action;
-                        this.handleSettingsAction(action);
-                    });
                 });
                 
                 // Закрытие модалок
@@ -1738,7 +2311,6 @@
                     });
                 });
                 
-                // Закрытие модалок по клику на оверлей
                 document.querySelectorAll('.modal-overlay').forEach(modal => {
                     modal.addEventListener('click', (e) => {
                         if (e.target === modal) {
@@ -1748,11 +2320,9 @@
                 });
             }
             
-            // Переключение вида
             switchView(view) {
                 this.currentView = view;
                 
-                // Обновление активной кнопки
                 document.querySelectorAll('.tab-btn').forEach(btn => {
                     btn.classList.remove('active');
                     if (btn.dataset.view === view) {
@@ -1760,19 +2330,26 @@
                     }
                 });
                 
-                // Показать нужный вид
                 document.querySelectorAll('.view').forEach(viewElement => {
                     viewElement.classList.remove('active');
                 });
-                document.getElementById(`${view}View`).classList.add('active');
+                
+                const viewId = `${view}View`;
+                if (document.getElementById(viewId)) {
+                    document.getElementById(viewId).classList.add('active');
+                }
+                
+                // Обновление данных для конкретного вида
+                if (view === 'analytics') {
+                    this.updateAnalytics();
+                    this.renderAnalyticsChart();
+                }
             }
             
-            // Открытие модуля
             openModule(module) {
                 this.switchView(module);
             }
             
-            // Обновление приветствия
             updateGreeting() {
                 const hour = new Date().getHours();
                 let greeting;
@@ -1785,7 +2362,6 @@
                 document.getElementById('greetingText').textContent = greeting;
             }
             
-            // Обновление дашборда
             updateDashboard() {
                 // Количество конспектов
                 document.getElementById('notesCount').textContent = this.data.notes.length;
@@ -1804,6 +2380,9 @@
                 
                 const balance = totalIncome - totalExpense;
                 document.getElementById('balanceAmount').textContent = balance + ' ₽';
+                document.getElementById('currentBalance').textContent = balance + ' ₽';
+                document.getElementById('monthIncome').textContent = '+' + totalIncome + ' ₽';
+                document.getElementById('monthExpense').textContent = '-' + totalExpense + ' ₽';
                 
                 // Задачи на сегодня
                 const today = new Date().toISOString().split('T')[0];
@@ -1816,21 +2395,30 @@
                     return false;
                 });
                 
-                document.getElementById('tasksToday').textContent = todayTasks.length;
+                const completedToday = todayTasks.filter(t => t.completed).length;
+                document.getElementById('tasksToday').textContent = completedToday + '/' + todayTasks.length;
+                document.getElementById('taskProgress').textContent = completedToday + '/' + todayTasks.length;
                 
-                // Продуктивность (простая логика)
+                // Продуктивность
                 const completedTasks = this.data.tasks.filter(task => task.completed).length;
                 const totalTasks = this.data.tasks.length;
                 const productivity = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
                 document.getElementById('productivityScore').textContent = productivity + '%';
                 
-                // Обновление финансовой страницы
-                document.getElementById('currentBalance').textContent = balance + ' ₽';
-                document.getElementById('monthIncome').textContent = '+' + totalIncome + ' ₽';
-                document.getElementById('monthExpense').textContent = '-' + totalExpense + ' ₽';
+                // Прогресс привычек
+                const todayHabits = this.data.habits.filter(habit => {
+                    const lastCompleted = habit.lastCompleted ? new Date(habit.lastCompleted).toISOString().split('T')[0] : null;
+                    return lastCompleted === today;
+                });
+                
+                const habitProgress = this.data.habits.length > 0 ? 
+                    Math.round((todayHabits.length / this.data.habits.length) * 100) : 0;
+                document.getElementById('habitProgress').textContent = habitProgress + '%';
+                
+                // Обновление аналитики
+                this.updateAnalytics();
             }
             
-            // Обработка кнопки добавления
             handleAddButton() {
                 switch(this.currentView) {
                     case 'tasks':
@@ -1842,26 +2430,27 @@
                     case 'finance':
                         this.showModal('addTransactionModal');
                         break;
-                    case 'diary':
-                        document.getElementById('diaryText').focus();
+                    case 'goals':
+                        this.showModal('addGoalModal');
+                        break;
+                    case 'analytics':
+                        this.exportData('pdf');
                         break;
                     default:
-                        // На главной - ничего не делаем
+                        this.showModal('addTaskModal');
                         break;
                 }
             }
             
-            // Показать модалку
             showModal(modalId) {
                 document.getElementById(modalId).classList.add('active');
             }
             
-            // Скрыть модалку
             hideModal(modalId) {
                 document.getElementById(modalId).classList.remove('active');
             }
             
-            // ====== ЗАДАЧИ ======
+            // ====== ЗАДАЧИ И ТАЙМЛАЙН ======
             saveTask() {
                 const title = document.getElementById('taskTitle').value.trim();
                 const type = document.getElementById('taskType').value;
@@ -1869,13 +2458,11 @@
                 const dueDate = document.getElementById('taskDueDate').value;
                 const description = document.getElementById('taskDescription').value.trim();
                 
-                // Валидация
                 if (!title) {
                     this.showNotification('Введите название задачи', 'error');
                     return;
                 }
                 
-                // Создание задачи
                 const task = {
                     id: Date.now(),
                     title,
@@ -1888,18 +2475,14 @@
                     createdAt: new Date().toISOString()
                 };
                 
-                // Добавление в массив
                 this.data.tasks.unshift(task);
-                
-                // Сохранение
                 this.saveData();
                 
-                // Обновление интерфейса
                 this.renderTasks();
                 this.updateDashboard();
                 this.renderCalendar();
+                this.renderProgressTimeline();
                 
-                // Очистка формы и закрытие модалки
                 document.getElementById('taskTitle').value = '';
                 document.getElementById('taskDescription').value = '';
                 
@@ -1907,11 +2490,9 @@
                 this.showNotification('Задача добавлена!', 'success');
             }
             
-            // Переключение типа задач
             switchTaskType(type) {
                 this.currentTaskType = type;
                 
-                // Обновление активной кнопки
                 document.querySelectorAll('.task-tab').forEach(tab => {
                     tab.classList.remove('active');
                     if (tab.dataset.type === type) {
@@ -1919,16 +2500,18 @@
                     }
                 });
                 
-                // Отображение задач
                 this.renderTasks();
             }
             
-            // Отображение задач
             renderTasks() {
                 const taskList = document.getElementById('taskList');
                 let filteredTasks = [];
-                
                 const today = new Date().toISOString().split('T')[0];
+                
+                if (this.currentTaskType === 'timeline') {
+                    this.renderTimelineView();
+                    return;
+                }
                 
                 switch(this.currentTaskType) {
                     case 'daily':
@@ -1962,57 +2545,59 @@
                 taskList.innerHTML = '';
                 
                 filteredTasks.forEach(task => {
-                    const taskElement = document.createElement('div');
-                    taskElement.className = 'task-item';
-                    taskElement.innerHTML = `
-                        <div class="task-checkbox ${task.completed ? 'checked' : ''}" 
-                             data-task-id="${task.id}"></div>
-                        <div class="task-content">
-                            <div class="task-title ${task.completed ? 'completed' : ''}">
-                                ${task.title}
-                            </div>
-                            <div class="task-meta">
-                                <span class="task-priority priority-${task.priority}">
-                                    ${task.priority === 'high' ? 'Высокий' : 
-                                      task.priority === 'medium' ? 'Средний' : 'Низкий'}
-                                </span>
-                                ${task.dueDate ? 
-                                    `<span><i class="far fa-calendar"></i> ${task.dueDate}</span>` : 
-                                    `<span><i class="fas fa-redo"></i> Ежедневно</span>`
-                                }
-                            </div>
-                            ${task.description ? 
-                                `<div style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
-                                    ${task.description}
-                                </div>` : ''
-                            }
-                        </div>
-                        <div class="task-actions">
-                            <button class="task-action-btn delete-task" data-task-id="${task.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Обработчик чекбокса
-                    const checkbox = taskElement.querySelector('.task-checkbox');
-                    checkbox.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.toggleTaskCompletion(task.id);
-                    });
-                    
-                    // Обработчик удаления
-                    const deleteBtn = taskElement.querySelector('.delete-task');
-                    deleteBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.deleteTask(task.id);
-                    });
-                    
+                    const taskElement = this.createTaskElement(task);
                     taskList.appendChild(taskElement);
                 });
             }
             
-            // Переключение выполнения задачи
+            createTaskElement(task) {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task-item';
+                taskElement.innerHTML = `
+                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" 
+                         data-task-id="${task.id}"></div>
+                    <div class="task-content">
+                        <div class="task-title ${task.completed ? 'completed' : ''}">
+                            ${task.title}
+                        </div>
+                        <div class="task-meta">
+                            <span class="task-priority priority-${task.priority}">
+                                ${task.priority === 'high' ? 'Высокий' : 
+                                  task.priority === 'medium' ? 'Средний' : 'Низкий'}
+                            </span>
+                            ${task.dueDate ? 
+                                `<span><i class="far fa-calendar"></i> ${task.dueDate}</span>` : 
+                                `<span><i class="fas fa-redo"></i> Ежедневно</span>`
+                            }
+                        </div>
+                        ${task.description ? 
+                            `<div style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                                ${task.description}
+                            </div>` : ''
+                        }
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-action-btn delete-task" data-task-id="${task.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                const checkbox = taskElement.querySelector('.task-checkbox');
+                checkbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleTaskCompletion(task.id);
+                });
+                
+                const deleteBtn = taskElement.querySelector('.delete-task');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.deleteTask(task.id);
+                });
+                
+                return taskElement;
+            }
+            
             toggleTaskCompletion(taskId) {
                 const task = this.data.tasks.find(t => t.id === taskId);
                 if (!task) return;
@@ -2020,68 +2605,1331 @@
                 const today = new Date().toISOString().split('T')[0];
                 
                 if (task.completed && task.completedDate === today) {
-                    // Снимаем выполнение
                     task.completed = false;
                     task.completedDate = null;
                 } else {
-                    // Отмечаем выполненной
                     task.completed = true;
                     task.completedDate = today;
                 }
                 
-                // Сохранение
                 this.saveData();
-                
-                // Обновление интерфейса
                 this.renderTasks();
                 this.updateDashboard();
                 this.renderCalendar();
+                this.renderProgressTimeline();
                 
                 this.showNotification('Задача обновлена', 'success');
             }
             
-            // Удаление задачи
             deleteTask(taskId) {
                 if (confirm('Удалить эту задачу?')) {
                     this.data.tasks = this.data.tasks.filter(task => task.id !== taskId);
-                    
-                    // Сохранение
                     this.saveData();
-                    
-                    // Обновление интерфейса
                     this.renderTasks();
                     this.updateDashboard();
                     this.renderCalendar();
-                    
+                    this.renderProgressTimeline();
                     this.showNotification('Задача удалена', 'success');
                 }
             }
             
-            // ====== КАЛЕНДАРЬ ======
+            // ====== ТАЙМЛАЙН ПРОГРЕССА ======
+            renderTimelineView() {
+                const taskList = document.getElementById('taskList');
+                const tasks = this.data.tasks
+                    .filter(t => t.completed)
+                    .sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate))
+                    .slice(0, 10);
+                
+                if (tasks.length === 0) {
+                    taskList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <p>Нет завершенных задач</p>
+                            <p style="font-size: 14px; margin-top: 8px;">Завершите несколько задач чтобы увидеть таймлайн</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                taskList.innerHTML = `
+                    <div class="timeline">
+                        ${tasks.map(task => `
+                            <div class="timeline-item">
+                                <div class="timeline-date">${new Date(task.completedDate).toLocaleDateString('ru-RU')}</div>
+                                <div class="timeline-content">
+                                    <div style="font-weight: 500;">${task.title}</div>
+                                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                                        ${task.type === 'daily' ? 'Ежедневная задача' : 'Месячная задача'}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            renderProgressTimeline() {
+                const timeline = document.getElementById('progressTimeline');
+                const recentTasks = this.data.tasks
+                    .filter(t => t.completed)
+                    .sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate))
+                    .slice(0, 5);
+                
+                if (recentTasks.length === 0) {
+                    timeline.innerHTML = `
+                        <div class="empty-state" style="padding: 20px;">
+                            <i class="fas fa-history"></i>
+                            <p>Нет недавних активностей</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                timeline.innerHTML = recentTasks.map(task => `
+                    <div class="timeline-item">
+                        <div class="timeline-date">${new Date(task.completedDate).toLocaleDateString('ru-RU')}</div>
+                        <div class="timeline-content">
+                            <div style="font-weight: 500;">${task.title}</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">
+                                Завершено
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // ====== КОНСПЕКТЫ И КВИЗ ======
+            saveNote() {
+                const subject = document.getElementById('noteSubject').value.trim();
+                const title = document.getElementById('noteTitle').value.trim();
+                const content = document.getElementById('noteContent').value.trim();
+                const tags = document.getElementById('noteTags').value.split(',').map(t => t.trim()).filter(t => t);
+                
+                if (!subject || !title || !content) {
+                    this.showNotification('Заполните все обязательные поля', 'error');
+                    return;
+                }
+                
+                const note = {
+                    id: Date.now(),
+                    subject,
+                    title,
+                    content,
+                    tags,
+                    created: new Date().toISOString(),
+                    updated: new Date().toISOString()
+                };
+                
+                this.data.notes.unshift(note);
+                this.saveData();
+                
+                this.renderNotes();
+                this.updateDashboard();
+                
+                document.getElementById('noteSubject').value = '';
+                document.getElementById('noteTitle').value = '';
+                document.getElementById('noteContent').value = '';
+                document.getElementById('noteTags').value = '';
+                
+                this.hideModal('addNoteModal');
+                this.showNotification('Конспект сохранен!', 'success');
+            }
+            
+            applyNoteTemplate(templateId) {
+                if (!templateId) return;
+                
+                const template = this.data.templates.note.find(t => t.id === templateId);
+                if (template) {
+                    document.getElementById('noteContent').value = template.content;
+                }
+            }
+            
+            renderNotes() {
+                const subjectSelector = document.getElementById('subjectSelector');
+                const subjects = [...new Set(this.data.notes.map(note => note.subject))];
+                
+                subjectSelector.innerHTML = '';
+                
+                const allBtn = document.createElement('button');
+                allBtn.className = 'subject-btn active';
+                allBtn.textContent = 'Все';
+                allBtn.dataset.subject = 'all';
+                allBtn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    this.filterNotes('all');
+                });
+                subjectSelector.appendChild(allBtn);
+                
+                subjects.forEach(subject => {
+                    const btn = document.createElement('button');
+                    btn.className = 'subject-btn';
+                    btn.textContent = subject;
+                    btn.dataset.subject = subject;
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        this.filterNotes(subject);
+                    });
+                    subjectSelector.appendChild(btn);
+                });
+                
+                this.filterNotes('all');
+            }
+            
+            filterNotes(subject) {
+                const notesList = document.getElementById('notesList');
+                let filteredNotes = this.data.notes;
+                
+                if (subject !== 'all') {
+                    filteredNotes = this.data.notes.filter(note => note.subject === subject);
+                }
+                
+                if (filteredNotes.length === 0) {
+                    notesList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-book-open"></i>
+                            <p>Нет конспектов</p>
+                            <p style="font-size: 14px; margin-top: 8px;">Добавьте первый конспект</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                notesList.innerHTML = '';
+                
+                filteredNotes.forEach(note => {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'note-item';
+                    noteElement.innerHTML = `
+                        <div class="note-header">
+                            <div class="note-title">${note.subject}: ${note.title}</div>
+                            <div class="note-date">${new Date(note.created).toLocaleDateString('ru-RU')}</div>
+                        </div>
+                        <div class="note-content">${note.content.substring(0, 100)}...</div>
+                        ${note.tags.length > 0 ? `
+                            <div class="note-tags">
+                                ${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    noteElement.addEventListener('click', () => {
+                        this.showNoteDetail(note);
+                    });
+                    
+                    notesList.appendChild(noteElement);
+                });
+            }
+            
+            showNoteDetail(note) {
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay active';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h3 class="modal-title">${note.subject}: ${note.title}</h3>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="white-space: pre-wrap; line-height: 1.6; margin-bottom: 20px;">
+                                ${note.content}
+                            </div>
+                            ${note.tags.length > 0 ? `
+                                <div class="note-tags">
+                                    ${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                            <div style="font-size: 14px; color: var(--text-muted); margin-top: 20px;">
+                                Создано: ${new Date(note.created).toLocaleString('ru-RU')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+            }
+            
+            // ====== КВИЗ ДЛЯ САМОПРОВЕРКИ ======
+            startQuiz() {
+                if (this.data.notes.length === 0) {
+                    this.showNotification('Добавьте конспекты для создания квиза', 'error');
+                    return;
+                }
+                
+                const quizQuestions = this.generateQuizQuestions();
+                this.showQuiz(quizQuestions);
+            }
+            
+            generateQuizQuestions() {
+                const questions = [];
+                const notes = [...this.data.notes];
+                
+                // Берем 5 случайных конспектов
+                for (let i = 0; i < Math.min(5, notes.length); i++) {
+                    const note = notes[Math.floor(Math.random() * notes.length)];
+                    const content = note.content;
+                    
+                    // Разбиваем контент на предложения
+                    const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 20);
+                    
+                    if (sentences.length > 0) {
+                        const sentence = sentences[Math.floor(Math.random() * sentences.length)].trim();
+                        
+                        // Создаем вопрос с пропущенным словом
+                        const words = sentence.split(' ');
+                        if (words.length > 3) {
+                            const missingWordIndex = Math.floor(Math.random() * words.length);
+                            const missingWord = words[missingWordIndex];
+                            words[missingWordIndex] = '_____';
+                            
+                            const question = {
+                                noteId: note.id,
+                                subject: note.subject,
+                                question: `Заполните пропуск в предложении из конспекта "${note.title}":`,
+                                sentence: words.join(' '),
+                                correctAnswer: missingWord,
+                                options: this.generateQuizOptions(missingWord)
+                            };
+                            
+                            questions.push(question);
+                        }
+                    }
+                }
+                
+                return questions;
+            }
+            
+            generateQuizOptions(correctAnswer) {
+                const options = [correctAnswer];
+                
+                // Добавляем 3 случайных слова
+                const allWords = [];
+                this.data.notes.forEach(note => {
+                    const words = note.content.split(/\s+/);
+                    allWords.push(...words);
+                });
+                
+                // Фильтруем уникальные слова подходящей длины
+                const uniqueWords = [...new Set(allWords.filter(w => 
+                    w.length > 2 && 
+                    w.length < 10 && 
+                    w !== correctAnswer &&
+                    !/[0-9]/.test(w)
+                ))];
+                
+                // Берем 3 случайных слова
+                for (let i = 0; i < 3 && uniqueWords.length > 0; i++) {
+                    const randomIndex = Math.floor(Math.random() * uniqueWords.length);
+                    options.push(uniqueWords[randomIndex]);
+                    uniqueWords.splice(randomIndex, 1);
+                }
+                
+                // Перемешиваем варианты ответов
+                return this.shuffleArray(options);
+            }
+            
+            shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+            
+            showQuiz(questions) {
+                const quizContent = document.getElementById('quizContent');
+                let currentQuestion = 0;
+                let score = 0;
+                let userAnswers = [];
+                
+                const renderQuestion = () => {
+                    if (currentQuestion >= questions.length) {
+                        this.showQuizResults(score, questions.length, userAnswers);
+                        return;
+                    }
+                    
+                    const q = questions[currentQuestion];
+                    quizContent.innerHTML = `
+                        <div class="quiz-container">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+                                Вопрос ${currentQuestion + 1} из ${questions.length}
+                            </div>
+                            <div class="quiz-question">${q.question}</div>
+                            <div style="font-style: italic; margin-bottom: 20px; color: var(--text-secondary);">
+                                "${q.sentence}"
+                            </div>
+                            <div class="quiz-options" id="quizOptions">
+                                ${q.options.map((option, index) => `
+                                    <div class="quiz-option" data-index="${index}">
+                                        ${option}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button class="btn btn-primary" id="nextQuestionBtn" style="width: 100%; margin-top: 20px;">
+                                ${currentQuestion === questions.length - 1 ? 'Завершить квиз' : 'Следующий вопрос'}
+                            </button>
+                        </div>
+                    `;
+                    
+                    document.querySelectorAll('.quiz-option').forEach(option => {
+                        option.addEventListener('click', (e) => {
+                            document.querySelectorAll('.quiz-option').forEach(opt => {
+                                opt.classList.remove('selected');
+                            });
+                            e.currentTarget.classList.add('selected');
+                            userAnswers[currentQuestion] = e.currentTarget.textContent;
+                        });
+                    });
+                    
+                    document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+                        if (userAnswers[currentQuestion]) {
+                            if (userAnswers[currentQuestion] === q.correctAnswer) {
+                                score++;
+                            }
+                            currentQuestion++;
+                            renderQuestion();
+                        } else {
+                            this.showNotification('Выберите вариант ответа', 'error');
+                        }
+                    });
+                };
+                
+                renderQuestion();
+                this.showModal('quizModal');
+            }
+            
+            showQuizResults(score, total, answers) {
+                const quizContent = document.getElementById('quizContent');
+                const percentage = Math.round((score / total) * 100);
+                
+                quizContent.innerHTML = `
+                    <div class="quiz-container">
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-trophy" style="font-size: 48px; color: var(--warning); margin-bottom: 20px;"></i>
+                            <h3 style="margin-bottom: 16px;">Результаты квиза</h3>
+                            <div style="font-size: 36px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
+                                ${score}/${total}
+                            </div>
+                            <div style="font-size: 18px; color: var(--text-secondary); margin-bottom: 30px;">
+                                ${percentage}% правильных ответов
+                            </div>
+                            <div style="background: var(--bg-surface); border-radius: var(--radius); padding: 16px; margin-bottom: 20px;">
+                                <div style="font-weight: 500; margin-bottom: 8px;">Ваш результат:</div>
+                                <div>
+                                    ${percentage >= 80 ? 'Отлично! Вы отлично знаете материал!' :
+                                      percentage >= 60 ? 'Хорошо! Но есть что повторить.' :
+                                      'Попробуйте еще раз! Рекомендуется повторить конспекты.'}
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="app.hideModal('quizModal')" style="width: 100%;">
+                                Закрыть
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Сохраняем результат
+                this.data.quizResults.push({
+                    date: new Date().toISOString(),
+                    score,
+                    total,
+                    percentage
+                });
+                this.saveData();
+            }
+            
+            // ====== ЦЕЛИ И ПРИВЫЧКИ ======
+            saveGoal() {
+                const title = document.getElementById('goalTitle').value.trim();
+                const type = document.getElementById('goalType').value;
+                const target = parseInt(document.getElementById('goalTarget').value);
+                const current = parseInt(document.getElementById('goalCurrent').value);
+                const deadline = document.getElementById('goalDeadline').value;
+                
+                if (!title || !target || target <= 0) {
+                    this.showNotification('Заполните все обязательные поля', 'error');
+                    return;
+                }
+                
+                const goal = {
+                    id: Date.now(),
+                    title,
+                    type,
+                    target,
+                    current,
+                    deadline,
+                    completed: current >= target,
+                    createdAt: new Date().toISOString()
+                };
+                
+                this.data.goals.unshift(goal);
+                this.saveData();
+                
+                this.renderGoals();
+                this.updateDashboard();
+                
+                document.getElementById('goalTitle').value = '';
+                document.getElementById('goalTarget').value = '';
+                document.getElementById('goalCurrent').value = '0';
+                
+                this.hideModal('addGoalModal');
+                this.showNotification('Цель сохранена!', 'success');
+            }
+            
+            renderGoals() {
+                const goalsList = document.getElementById('goalsList');
+                const activeGoals = this.data.goals.filter(goal => !goal.completed);
+                
+                if (activeGoals.length === 0) {
+                    goalsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-bullseye"></i>
+                            <p>Нет активных целей</p>
+                            <p style="font-size: 14px; margin-top: 8px;">Добавьте первую цель</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                goalsList.innerHTML = activeGoals.map(goal => {
+                    const progress = Math.min(Math.round((goal.current / goal.target) * 100), 100);
+                    return `
+                        <div class="goal-item">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div style="font-weight: 500;">${goal.title}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">
+                                    ${goal.type === 'daily' ? 'Ежедневно' : 
+                                      goal.type === 'weekly' ? 'Еженедельно' : 
+                                      goal.type === 'monthly' ? 'Ежемесячно' : 'Ежегодно'}
+                                </div>
+                            </div>
+                            <div class="goal-progress">
+                                <div class="goal-progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+                                <div>${goal.current}/${goal.target}</div>
+                                <div>${progress}%</div>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                <button class="btn btn-secondary btn-sm" onclick="app.updateGoalProgress(${goal.id}, 1)" style="flex: 1;">
+                                    <i class="fas fa-plus"></i> +1
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="app.updateGoalProgress(${goal.id}, -1)" style="flex: 1;">
+                                    <i class="fas fa-minus"></i> -1
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="app.deleteGoal(${goal.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            updateGoalProgress(goalId, delta) {
+                const goal = this.data.goals.find(g => g.id === goalId);
+                if (!goal) return;
+                
+                goal.current = Math.max(0, goal.current + delta);
+                goal.completed = goal.current >= goal.target;
+                
+                this.saveData();
+                this.renderGoals();
+                this.updateDashboard();
+                
+                if (goal.completed) {
+                    this.showNotification(`Цель "${goal.title}" достигнута! 🎉`, 'success');
+                }
+            }
+            
+            deleteGoal(goalId) {
+                if (confirm('Удалить эту цель?')) {
+                    this.data.goals = this.data.goals.filter(g => g.id !== goalId);
+                    this.saveData();
+                    this.renderGoals();
+                    this.updateDashboard();
+                    this.showNotification('Цель удалена', 'success');
+                }
+            }
+            
+            saveHabit() {
+                const title = document.getElementById('habitTitle').value.trim();
+                const frequency = document.getElementById('habitFrequency').value;
+                const target = parseInt(document.getElementById('habitTarget').value);
+                const reminderTime = document.getElementById('habitReminderTime').value;
+                const reminderDays = document.getElementById('habitReminderDays').value;
+                
+                if (!title || !target || target <= 0) {
+                    this.showNotification('Заполните все обязательные поля', 'error');
+                    return;
+                }
+                
+                const habit = {
+                    id: Date.now(),
+                    title,
+                    frequency,
+                    target,
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    lastCompleted: null,
+                    reminderTime,
+                    reminderDays,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                };
+                
+                this.data.habits.unshift(habit);
+                this.saveData();
+                
+                this.renderHabits();
+                this.updateDashboard();
+                
+                document.getElementById('habitTitle').value = '';
+                document.getElementById('habitTarget').value = '';
+                
+                this.hideModal('addHabitModal');
+                this.showNotification('Привычка сохранена!', 'success');
+            }
+            
+            renderHabits() {
+                const habitsList = document.getElementById('habitsList');
+                const today = new Date().toISOString().split('T')[0];
+                
+                if (this.data.habits.length === 0) {
+                    habitsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-fire"></i>
+                            <p>Нет привычек</p>
+                            <p style="font-size: 14px; margin-top: 8px;">Добавьте первую привычку</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                habitsList.innerHTML = this.data.habits.map(habit => {
+                    const lastCompleted = habit.lastCompleted ? 
+                        new Date(habit.lastCompleted).toISOString().split('T')[0] : null;
+                    const completedToday = lastCompleted === today;
+                    
+                    return `
+                        <div class="goal-item">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div style="font-weight: 500;">${habit.title}</div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 12px; color: ${completedToday ? 'var(--secondary)' : 'var(--text-muted)'};">
+                                        ${completedToday ? '✓ Сегодня' : 'Не выполнено'}
+                                    </span>
+                                    <span style="font-size: 12px; color: var(--warning);">
+                                        🔥 ${habit.currentStreak}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="goal-progress">
+                                <div class="goal-progress-bar" style="width: ${Math.round((habit.currentStreak / habit.target) * 100)}%"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+                                <div>Цель: ${habit.target} дней</div>
+                                <div>Рекорд: ${habit.longestStreak} дней</div>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                <button class="btn ${completedToday ? 'btn-secondary' : 'btn-success'}" 
+                                        onclick="app.toggleHabit(${habit.id})" 
+                                        style="flex: 1;">
+                                    <i class="fas ${completedToday ? 'fa-undo' : 'fa-check'}"></i>
+                                    ${completedToday ? 'Отменить' : 'Выполнено'}
+                                </button>
+                                <button class="btn btn-danger" onclick="app.deleteHabit(${habit.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            toggleHabit(habitId) {
+                const habit = this.data.habits.find(h => h.id === habitId);
+                if (!habit) return;
+                
+                const today = new Date().toISOString().split('T')[0];
+                const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+                const lastCompleted = habit.lastCompleted ? 
+                    new Date(habit.lastCompleted).toISOString().split('T')[0] : null;
+                
+                if (lastCompleted === today) {
+                    // Отменяем выполнение сегодня
+                    habit.lastCompleted = null;
+                    habit.currentStreak = Math.max(0, habit.currentStreak - 1);
+                } else {
+                    // Отмечаем выполнение
+                    habit.lastCompleted = new Date().toISOString();
+                    
+                    if (lastCompleted === yesterday) {
+                        habit.currentStreak++;
+                    } else {
+                        habit.currentStreak = 1;
+                    }
+                    
+                    habit.longestStreak = Math.max(habit.longestStreak, habit.currentStreak);
+                }
+                
+                habit.completed = habit.currentStreak >= habit.target;
+                
+                this.saveData();
+                this.renderHabits();
+                this.updateDashboard();
+                
+                this.showNotification('Привычка обновлена', 'success');
+            }
+            
+            deleteHabit(habitId) {
+                if (confirm('Удалить эту привычку?')) {
+                    this.data.habits = this.data.habits.filter(h => h.id !== habitId);
+                    this.saveData();
+                    this.renderHabits();
+                    this.updateDashboard();
+                    this.showNotification('Привычка удалена', 'success');
+                }
+            }
+            
+            // ====== НАПОМИНАНИЯ И УВЕДОМЛЕНИЯ ======
+            setupReminders() {
+                // Проверяем напоминания каждую минуту
+                this.reminderInterval = setInterval(() => {
+                    this.checkReminders();
+                }, 60000);
+                
+                this.checkReminders();
+            }
+            
+            saveReminder() {
+                const text = document.getElementById('reminderText').value.trim();
+                const dateTime = document.getElementById('reminderDateTime').value;
+                const repeat = document.getElementById('reminderRepeat').value;
+                
+                if (!text || !dateTime) {
+                    this.showNotification('Заполните все обязательные поля', 'error');
+                    return;
+                }
+                
+                const reminder = {
+                    id: Date.now(),
+                    text,
+                    dateTime,
+                    repeat,
+                    notified: false,
+                    createdAt: new Date().toISOString()
+                };
+                
+                this.data.reminders.unshift(reminder);
+                this.saveData();
+                
+                document.getElementById('reminderText').value = '';
+                
+                this.hideModal('reminderModal');
+                this.showNotification('Напоминание установлено!', 'success');
+                
+                // Обновляем счетчик уведомлений
+                this.updateNotificationBadge();
+            }
+            
+            checkReminders() {
+                const now = new Date();
+                const nowStr = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
+                
+                this.data.reminders.forEach(reminder => {
+                    if (!reminder.notified && reminder.dateTime.slice(0, 16) === nowStr) {
+                        this.showBrowserNotification(reminder.text);
+                        reminder.notified = true;
+                        
+                        // Если повторяющееся напоминание, создаем следующее
+                        if (reminder.repeat !== 'none') {
+                            const nextDate = new Date(reminder.dateTime);
+                            
+                            switch(reminder.repeat) {
+                                case 'daily':
+                                    nextDate.setDate(nextDate.getDate() + 1);
+                                    break;
+                                case 'weekly':
+                                    nextDate.setDate(nextDate.getDate() + 7);
+                                    break;
+                                case 'monthly':
+                                    nextDate.setMonth(nextDate.getMonth() + 1);
+                                    break;
+                            }
+                            
+                            const nextReminder = {
+                                ...reminder,
+                                id: Date.now(),
+                                dateTime: nextDate.toISOString().slice(0, 16),
+                                notified: false
+                            };
+                            
+                            this.data.reminders.push(nextReminder);
+                        }
+                        
+                        this.notificationCount++;
+                        this.updateNotificationBadge();
+                    }
+                });
+                
+                this.saveData();
+            }
+            
+            showBrowserNotification(message) {
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("Smart Life Напоминание", {
+                        body: message,
+                        icon: "https://avatars.mds.yandex.net/i?id=500318e2ce57b0542c2babc4d946ed4ff50aa0dc-3344187-images-thumbs&n=13"
+                    });
+                } else if ("Notification" in window && Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            new Notification("Smart Life Напоминание", {
+                                body: message,
+                                icon: "https://avatars.mds.yandex.net/i?id=500318e2ce57b0542c2babc4d946ed4ff50aa0dc-3344187-images-thumbs&n=13"
+                            });
+                        }
+                    });
+                }
+                
+                // Показываем уведомление в приложении
+                this.showNotification(`Напоминание: ${message}`, 'warning');
+            }
+            
+            updateNotificationBadge() {
+                const badge = document.querySelector('.notification-badge');
+                const pendingReminders = this.data.reminders.filter(r => !r.notified && 
+                    new Date(r.dateTime) <= new Date()).length;
+                
+                this.notificationCount = pendingReminders;
+                
+                if (pendingReminders > 0) {
+                    badge.textContent = pendingReminders;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+            
+            showNotifications() {
+                const pendingReminders = this.data.reminders.filter(r => !r.notified && 
+                    new Date(r.dateTime) <= new Date());
+                
+                if (pendingReminders.length === 0) {
+                    this.showNotification('Нет новых уведомлений', 'info');
+                    return;
+                }
+                
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay active';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Уведомления</h3>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="margin-bottom: 20px;">
+                                <button class="btn btn-secondary" onclick="app.markAllNotificationsAsRead()" style="width: 100%;">
+                                    <i class="fas fa-check"></i> Отметить все как прочитанные
+                                </button>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                ${pendingReminders.map(reminder => `
+                                    <div class="reminder-item">
+                                        <div style="font-weight: 500; margin-bottom: 4px;">${reminder.text}</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">
+                                            ${new Date(reminder.dateTime).toLocaleString('ru-RU')}
+                                        </div>
+                                        <button class="btn btn-secondary btn-sm" 
+                                                onclick="app.markNotificationAsRead(${reminder.id})"
+                                                style="margin-top: 8px;">
+                                            <i class="fas fa-check"></i> Отметить как прочитанное
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+            }
+            
+            markNotificationAsRead(reminderId) {
+                const reminder = this.data.reminders.find(r => r.id === reminderId);
+                if (reminder) {
+                    reminder.notified = true;
+                    this.saveData();
+                    this.updateNotificationBadge();
+                    this.showNotification('Уведомление отмечено как прочитанное', 'success');
+                }
+            }
+            
+            markAllNotificationsAsRead() {
+                this.data.reminders.forEach(reminder => {
+                    if (!reminder.notified && new Date(reminder.dateTime) <= new Date()) {
+                        reminder.notified = true;
+                    }
+                });
+                
+                this.saveData();
+                this.updateNotificationBadge();
+                this.showNotification('Все уведомления отмечены как прочитанные', 'success');
+            }
+            
+            // ====== ЭКСПОРТ ДАННЫХ ======
+            exportData(type) {
+                const data = {
+                    tasks: this.data.tasks,
+                    notes: this.data.notes,
+                    transactions: this.data.transactions,
+                    goals: this.data.goals,
+                    habits: this.data.habits,
+                    reminders: this.data.reminders,
+                    exportDate: new Date().toISOString()
+                };
+                
+                let content, filename, mimeType;
+                
+                switch(type) {
+                    case 'pdf':
+                        this.exportToPDF(data);
+                        return;
+                        
+                    case 'text':
+                        content = this.formatDataAsText(data);
+                        filename = `smart-life-backup-${new Date().toISOString().split('T')[0]}.txt`;
+                        mimeType = 'text/plain';
+                        break;
+                        
+                    case 'csv':
+                        content = this.formatDataAsCSV(data);
+                        filename = `smart-life-backup-${new Date().toISOString().split('T')[0]}.csv`;
+                        mimeType = 'text/csv';
+                        break;
+                }
+                
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification(`Данные экспортированы в ${type.toUpperCase()}`, 'success');
+            }
+            
+            exportToPDF(data) {
+                // Простой экспорт в PDF с использованием jsPDF
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    
+                    let y = 20;
+                    
+                    // Заголовок
+                    doc.setFontSize(20);
+                    doc.text('Smart Life - Экспорт данных', 20, y);
+                    y += 10;
+                    
+                    doc.setFontSize(12);
+                    doc.text(`Дата экспорта: ${new Date().toLocaleString('ru-RU')}`, 20, y);
+                    y += 20;
+                    
+                    // Задачи
+                    if (data.tasks.length > 0) {
+                        doc.setFontSize(16);
+                        doc.text('Задачи:', 20, y);
+                        y += 10;
+                        
+                        data.tasks.forEach((task, index) => {
+                            doc.setFontSize(12);
+                            doc.text(`${index + 1}. ${task.title} - ${task.completed ? 'Выполнено' : 'Не выполнено'}`, 20, y);
+                            y += 7;
+                            
+                            if (y > 280) {
+                                doc.addPage();
+                                y = 20;
+                            }
+                        });
+                        y += 10;
+                    }
+                    
+                    // Конспекты
+                    if (data.notes.length > 0) {
+                        doc.setFontSize(16);
+                        doc.text('Конспекты:', 20, y);
+                        y += 10;
+                        
+                        data.notes.forEach((note, index) => {
+                            doc.setFontSize(12);
+                            doc.text(`${index + 1}. ${note.subject}: ${note.title}`, 20, y);
+                            y += 7;
+                            
+                            if (y > 280) {
+                                doc.addPage();
+                                y = 20;
+                            }
+                        });
+                    }
+                    
+                    doc.save(`smart-life-backup-${new Date().toISOString().split('T')[0]}.pdf`);
+                    this.showNotification('Данные экспортированы в PDF', 'success');
+                } catch (error) {
+                    this.showNotification('Ошибка экспорта в PDF', 'error');
+                }
+            }
+            
+            formatDataAsText(data) {
+                let text = 'Smart Life - Экспорт данных\n';
+                text += `Дата экспорта: ${new Date().toLocaleString('ru-RU')}\n\n`;
+                
+                text += '=== ЗАДАЧИ ===\n';
+                data.tasks.forEach((task, index) => {
+                    text += `${index + 1}. ${task.title} (${task.type}) - ${task.completed ? 'Выполнено' : 'Не выполнено'}\n`;
+                });
+                
+                text += '\n=== КОНСПЕКТЫ ===\n';
+                data.notes.forEach((note, index) => {
+                    text += `${index + 1}. ${note.subject}: ${note.title}\n`;
+                });
+                
+                text += '\n=== ФИНАНСЫ ===\n';
+                let totalIncome = 0;
+                let totalExpense = 0;
+                
+                data.transactions.forEach(transaction => {
+                    if (transaction.type === 'income') {
+                        totalIncome += transaction.amount;
+                    } else {
+                        totalExpense += transaction.amount;
+                    }
+                });
+                
+                text += `Доходы: ${totalIncome} ₽\n`;
+                text += `Расходы: ${totalExpense} ₽\n`;
+                text += `Баланс: ${totalIncome - totalExpense} ₽\n`;
+                
+                return text;
+            }
+            
+            formatDataAsCSV(data) {
+                let csv = 'Тип,Название,Статус,Дата\n';
+                
+                // Задачи
+                data.tasks.forEach(task => {
+                    csv += `Задача,"${task.title}",${task.completed ? 'Выполнено' : 'Не выполнено'},${task.createdAt}\n`;
+                });
+                
+                // Конспекты
+                data.notes.forEach(note => {
+                    csv += `Конспект,"${note.subject}: ${note.title}",Создан,${note.created}\n`;
+                });
+                
+                // Транзакции
+                data.transactions.forEach(transaction => {
+                    csv += `Транзакция,"${transaction.description}",${transaction.type === 'income' ? 'Доход' : 'Расход'},${transaction.date}\n`;
+                });
+                
+                return csv;
+            }
+            
+            // ====== АНАЛИТИКА И СТАТИСТИКА ======
+            updateAnalytics() {
+                const now = new Date();
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                
+                // Задачи на неделе
+                const weeklyTasks = this.data.tasks.filter(task => 
+                    new Date(task.createdAt) >= weekAgo
+                ).length;
+                document.getElementById('weeklyTasks').textContent = weeklyTasks;
+                
+                // Конспекты создано
+                document.getElementById('notesCreated').textContent = this.data.notes.length;
+                
+                // Выполнение целей
+                const completedGoals = this.data.goals.filter(g => g.completed).length;
+                const goalCompletion = this.data.goals.length > 0 ? 
+                    Math.round((completedGoals / this.data.goals.length) * 100) : 0;
+                document.getElementById('goalCompletion').textContent = goalCompletion + '%';
+                
+                // Серия дней
+                let streak = 0;
+                const today = new Date().toISOString().split('T')[0];
+                const dates = new Set();
+                
+                this.data.tasks.forEach(task => {
+                    if (task.completedDate) {
+                        dates.add(task.completedDate);
+                    }
+                });
+                
+                // Проверяем последовательные дни
+                let currentDate = new Date(today);
+                while (true) {
+                    const dateStr = currentDate.toISOString().split('T')[0];
+                    if (dates.has(dateStr)) {
+                        streak++;
+                        currentDate.setDate(currentDate.getDate() - 1);
+                    } else {
+                        break;
+                    }
+                }
+                
+                document.getElementById('streakDays').textContent = streak;
+            }
+            
+            renderAnalyticsChart() {
+                const chartType = document.getElementById('chartType').value;
+                const ctx = document.getElementById('analyticsChart').getContext('2d');
+                
+                // Удаляем старый график если есть
+                if (window.analyticsChart) {
+                    window.analyticsChart.destroy();
+                }
+                
+                let data, labels, chartConfig;
+                
+                const last7Days = [];
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    last7Days.push(date.toISOString().split('T')[0]);
+                }
+                
+                switch(chartType) {
+                    case 'tasks':
+                        labels = last7Days.map(date => 
+                            new Date(date).toLocaleDateString('ru-RU', { weekday: 'short' })
+                        );
+                        
+                        const completedByDay = last7Days.map(date => 
+                            this.data.tasks.filter(task => 
+                                task.completed && task.completedDate === date
+                            ).length
+                        );
+                        
+                        const createdByDay = last7Days.map(date => 
+                            this.data.tasks.filter(task => 
+                                task.createdAt.split('T')[0] === date
+                            ).length
+                        );
+                        
+                        data = {
+                            labels,
+                            datasets: [
+                                {
+                                    label: 'Выполнено',
+                                    data: completedByDay,
+                                    backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                                    borderColor: 'rgb(16, 185, 129)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Создано',
+                                    data: createdByDay,
+                                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderColor: 'rgb(59, 130, 246)',
+                                    borderWidth: 1
+                                }
+                            ]
+                        };
+                        
+                        chartConfig = {
+                            type: 'bar',
+                            data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: 'white'
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: 'white'
+                                        },
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.1)'
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: 'white'
+                                        },
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.1)'
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                        
+                    case 'notes':
+                        labels = [...new Set(this.data.notes.map(n => n.subject))].slice(0, 6);
+                        const notesBySubject = labels.map(subject => 
+                            this.data.notes.filter(n => n.subject === subject).length
+                        );
+                        
+                        data = {
+                            labels,
+                            datasets: [{
+                                label: 'Конспекты по предметам',
+                                data: notesBySubject,
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.7)',
+                                    'rgba(16, 185, 129, 0.7)',
+                                    'rgba(245, 158, 11, 0.7)',
+                                    'rgba(139, 92, 246, 0.7)',
+                                    'rgba(236, 72, 153, 0.7)',
+                                    'rgba(100, 116, 139, 0.7)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        };
+                        
+                        chartConfig = {
+                            type: 'pie',
+                            data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'right',
+                                        labels: {
+                                            color: 'white'
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                        
+                    case 'finance':
+                        const last5Transactions = this.data.transactions.slice(0, 5).reverse();
+                        labels = last5Transactions.map(t => 
+                            new Date(t.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })
+                        );
+                        
+                        const amounts = last5Transactions.map(t => 
+                            t.type === 'income' ? t.amount : -t.amount
+                        );
+                        
+                        data = {
+                            labels,
+                            datasets: [{
+                                label: 'Финансы',
+                                data: amounts,
+                                backgroundColor: amounts.map(a => a >= 0 ? 'rgba(16, 185, 129, 0.5)' : 'rgba(239, 68, 68, 0.5)'),
+                                borderColor: amounts.map(a => a >= 0 ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)'),
+                                borderWidth: 1
+                            }]
+                        };
+                        
+                        chartConfig = {
+                            type: 'bar',
+                            data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: 'white'
+                                        },
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.1)'
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: 'white'
+                                        },
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.1)'
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                }
+                
+                window.analyticsChart = new Chart(ctx, chartConfig);
+            }
+            
+            // ====== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ======
+            showNotification(message, type = 'info') {
+                const container = document.getElementById('notificationContainer');
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                
+                if (type === 'error') {
+                    notification.style.background = '#ef4444';
+                } else if (type === 'warning') {
+                    notification.style.background = '#f59e0b';
+                } else if (type === 'success') {
+                    notification.style.background = '#10b981';
+                }
+                
+                container.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Эти методы нужно добавить из оригинального кода
             renderCalendar() {
+                // Код рендеринга календаря из оригинального приложения
                 const calendarGrid = document.getElementById('calendarGrid');
                 const currentMonth = document.getElementById('currentMonth');
                 
-                // Установка названия месяца
                 const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 
                                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
                 const year = this.currentDate.getFullYear();
                 const month = this.currentDate.getMonth();
                 currentMonth.textContent = `${months[month]} ${year}`;
                 
-                // Получаем первый день месяца
                 const firstDay = new Date(year, month, 1);
-                // Получаем последний день месяца
                 const lastDay = new Date(year, month + 1, 0);
-                // Получаем день недели первого дня (0 - воскресенье, 1 - понедельник...)
                 const firstDayIndex = firstDay.getDay();
-                // Получаем количество дней в месяце
                 const daysInMonth = lastDay.getDate();
                 
-                // Очищаем календарь
                 calendarGrid.innerHTML = '';
                 
-                // Добавляем заголовки дней недели
                 const daysOfWeek = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
                 daysOfWeek.forEach(day => {
                     const dayHeader = document.createElement('div');
@@ -2090,14 +3938,12 @@
                     calendarGrid.appendChild(dayHeader);
                 });
                 
-                // Добавляем пустые ячейки перед первым днем месяца
                 for (let i = 0; i < firstDayIndex; i++) {
                     const emptyDay = document.createElement('div');
                     emptyDay.className = 'calendar-day';
                     calendarGrid.appendChild(emptyDay);
                 }
                 
-                // Добавляем дни месяца
                 const today = new Date();
                 const todayStr = today.toISOString().split('T')[0];
                 
@@ -2110,7 +3956,6 @@
                     dayElement.textContent = day;
                     dayElement.dataset.date = dateStr;
                     
-                    // Проверяем, есть ли задачи на этот день
                     const hasTasks = this.data.tasks.some(task => {
                         if (task.type === 'daily') {
                             return !task.completed || task.completedDate === dateStr;
@@ -2120,7 +3965,6 @@
                         return false;
                     });
                     
-                    // Добавляем классы
                     if (dateStr === todayStr) {
                         dayElement.classList.add('today');
                     }
@@ -2129,7 +3973,6 @@
                         dayElement.classList.add('has-tasks');
                     }
                     
-                    // Обработчик клика
                     dayElement.addEventListener('click', () => {
                         this.showDayTasks(dateStr);
                     });
@@ -2138,7 +3981,6 @@
                 }
             }
             
-            // Показать задачи на день
             showDayTasks(dateStr) {
                 const calendarTasks = document.getElementById('calendarTasks');
                 const date = new Date(dateStr);
@@ -2149,7 +3991,6 @@
                     day: 'numeric'
                 });
                 
-                // Получаем задачи на этот день
                 const dayTasks = this.data.tasks.filter(task => {
                     if (task.type === 'daily') {
                         return !task.completed || task.completedDate === dateStr;
@@ -2205,7 +4046,6 @@
                 
                 calendarTasks.innerHTML = tasksHTML;
                 
-                // Добавляем обработчики чекбоксов
                 document.querySelectorAll('#calendarTasks .task-checkbox').forEach(checkbox => {
                     const taskId = parseInt(checkbox.dataset.taskId);
                     checkbox.addEventListener('click', () => {
@@ -2214,217 +4054,6 @@
                 });
             }
             
-            // ====== КОНСПЕКТЫ ======
-            saveNote() {
-                const subject = document.getElementById('noteSubject').value.trim();
-                const title = document.getElementById('noteTitle').value.trim();
-                const content = document.getElementById('noteContent').value.trim();
-                const tags = document.getElementById('noteTags').value.split(',').map(t => t.trim()).filter(t => t);
-                
-                // Валидация
-                if (!subject || !title || !content) {
-                    this.showNotification('Заполните все обязательные поля', 'error');
-                    return;
-                }
-                
-                // Создание конспекта
-                const note = {
-                    id: Date.now(),
-                    subject,
-                    title,
-                    content,
-                    tags,
-                    created: new Date().toISOString(),
-                    updated: new Date().toISOString()
-                };
-                
-                // Добавление в массив
-                this.data.notes.unshift(note);
-                
-                // Сохранение
-                this.saveData();
-                
-                // Обновление интерфейса
-                this.renderNotes();
-                this.updateDashboard();
-                
-                // Очистка формы и закрытие модалки
-                document.getElementById('noteSubject').value = '';
-                document.getElementById('noteTitle').value = '';
-                document.getElementById('noteContent').value = '';
-                document.getElementById('noteTags').value = '';
-                
-                this.hideModal('addNoteModal');
-                this.showNotification('Конспект сохранен!', 'success');
-            }
-            
-            // Отображение конспектов
-            renderNotes() {
-                const notesList = document.getElementById('notesList');
-                const subjectSelector = document.getElementById('subjectSelector');
-                
-                // Получаем уникальные предметы
-                const subjects = [...new Set(this.data.notes.map(note => note.subject))];
-                
-                // Очищаем и создаем фильтры по предметам
-                subjectSelector.innerHTML = '';
-                
-                // Кнопка "Все"
-                const allBtn = document.createElement('button');
-                allBtn.className = 'subject-btn active';
-                allBtn.textContent = 'Все';
-                allBtn.dataset.subject = 'all';
-                allBtn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
-                    e.currentTarget.classList.add('active');
-                    this.filterNotes('all');
-                });
-                subjectSelector.appendChild(allBtn);
-                
-                // Кнопки для каждого предмета
-                subjects.forEach(subject => {
-                    const btn = document.createElement('button');
-                    btn.className = 'subject-btn';
-                    btn.textContent = subject;
-                    btn.dataset.subject = subject;
-                    btn.addEventListener('click', (e) => {
-                        document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
-                        e.currentTarget.classList.add('active');
-                        this.filterNotes(subject);
-                    });
-                    subjectSelector.appendChild(btn);
-                });
-                
-                // Отображаем все конспекты
-                this.filterNotes('all');
-            }
-            
-            // Фильтрация конспектов по предмету
-            filterNotes(subject) {
-                const notesList = document.getElementById('notesList');
-                let filteredNotes = this.data.notes;
-                
-                if (subject !== 'all') {
-                    filteredNotes = this.data.notes.filter(note => note.subject === subject);
-                }
-                
-                if (filteredNotes.length === 0) {
-                    notesList.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-book-open"></i>
-                            <p>Нет конспектов</p>
-                            <p style="font-size: 14px; margin-top: 8px;">Добавьте первый конспект</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                notesList.innerHTML = '';
-                
-                filteredNotes.forEach(note => {
-                    const noteElement = document.createElement('div');
-                    noteElement.className = 'note-item';
-                    noteElement.innerHTML = `
-                        <div class="note-header">
-                            <div class="note-title">${note.subject}: ${note.title}</div>
-                            <div class="note-date">${new Date(note.created).toLocaleDateString('ru-RU')}</div>
-                        </div>
-                        <div class="note-content">${note.content.substring(0, 100)}...</div>
-                        ${note.tags.length > 0 ? `
-                            <div class="note-tags">
-                                ${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            </div>
-                        ` : ''}
-                    `;
-                    
-                    noteElement.addEventListener('click', () => {
-                        this.showNoteDetail(note);
-                    });
-                    
-                    notesList.appendChild(noteElement);
-                });
-            }
-            
-            // Показать детали конспекта
-            showNoteDetail(note) {
-                const modal = document.createElement('div');
-                modal.className = 'modal-overlay active';
-                modal.innerHTML = `
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h3 class="modal-title">${note.subject}: ${note.title}</h3>
-                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div style="white-space: pre-wrap; line-height: 1.6; margin-bottom: 20px;">
-                                ${note.content}
-                            </div>
-                            ${note.tags.length > 0 ? `
-                                <div class="note-tags">
-                                    ${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                                </div>
-                            ` : ''}
-                            <div style="font-size: 14px; color: var(--text-muted); margin-top: 20px;">
-                                Создано: ${new Date(note.created).toLocaleString('ru-RU')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(modal);
-            }
-            
-            // ====== ФИНАНСЫ ======
-            saveTransaction() {
-                const type = document.getElementById('transactionType').value;
-                const amount = parseFloat(document.getElementById('transactionAmount').value);
-                const category = document.getElementById('transactionCategory').value;
-                const description = document.getElementById('transactionDescription').value.trim();
-                const date = document.getElementById('transactionDate').value;
-                
-                // Валидация
-                if (!amount || amount <= 0) {
-                    this.showNotification('Введите корректную сумму', 'error');
-                    return;
-                }
-                
-                if (!description) {
-                    this.showNotification('Введите описание', 'error');
-                    return;
-                }
-                
-                // Создание транзакции
-                const transaction = {
-                    id: Date.now(),
-                    type,
-                    amount,
-                    category,
-                    description,
-                    date,
-                    created: new Date().toISOString()
-                };
-                
-                // Добавление в массив
-                this.data.transactions.unshift(transaction);
-                
-                // Сохранение
-                this.saveData();
-                
-                // Обновление интерфейса
-                this.renderTransactions();
-                this.updateDashboard();
-                
-                // Очистка формы и закрытие модалки
-                document.getElementById('transactionAmount').value = '';
-                document.getElementById('transactionDescription').value = '';
-                
-                this.hideModal('addTransactionModal');
-                this.showNotification('Операция сохранена!', 'success');
-            }
-            
-            // Отображение транзакций
             renderTransactions() {
                 const transactionsList = document.getElementById('transactionsList');
                 const recentTransactions = this.data.transactions.slice(0, 10);
@@ -2443,14 +4072,13 @@
                 transactionsList.innerHTML = '';
                 
                 recentTransactions.forEach(transaction => {
-                    const category = this.data.categories[transaction.type].find(c => c.id === transaction.category);
                     const transactionElement = document.createElement('div');
                     transactionElement.className = 'transaction-item';
                     transactionElement.innerHTML = `
                         <div class="transaction-info">
                             <div class="transaction-name">${transaction.description}</div>
                             <div class="transaction-category">
-                                ${category ? category.icon + ' ' + category.name : transaction.category}
+                                ${transaction.category}
                             </div>
                         </div>
                         <div class="transaction-amount ${transaction.type}">
@@ -2462,63 +4090,46 @@
                 });
             }
             
-            // ====== ДНЕВНИК ======
-            setMood(mood) {
-                this.currentMood = mood;
+            saveTransaction() {
+                const type = document.getElementById('transactionType').value;
+                const amount = parseFloat(document.getElementById('transactionAmount').value);
+                const category = document.getElementById('transactionCategory').value;
+                const description = document.getElementById('transactionDescription').value.trim();
+                const date = document.getElementById('transactionDate').value;
                 
-                // Обновление UI
-                document.querySelectorAll('.mood-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                    if (btn.dataset.mood === mood) {
-                        btn.classList.add('active');
-                    }
-                });
-            }
-            
-            // Сохранить дневник
-            saveDiary() {
-                const content = document.getElementById('diaryText').value.trim();
-                
-                if (!content) {
-                    this.showNotification('Запись пуста', 'error');
+                if (!amount || amount <= 0) {
+                    this.showNotification('Введите корректную сумму', 'error');
                     return;
                 }
                 
-                const today = new Date().toISOString().split('T')[0];
-                
-                // Проверяем, есть ли запись на сегодня
-                const existingIndex = this.data.diary.findIndex(entry => 
-                    new Date(entry.date).toISOString().split('T')[0] === today
-                );
-                
-                const diaryEntry = {
-                    id: Date.now(),
-                    date: new Date().toISOString(),
-                    mood: this.currentMood,
-                    content
-                };
-                
-                if (existingIndex !== -1) {
-                    // Обновляем существующую запись
-                    this.data.diary[existingIndex] = diaryEntry;
-                } else {
-                    // Добавляем новую запись
-                    this.data.diary.unshift(diaryEntry);
+                if (!description) {
+                    this.showNotification('Введите описание', 'error');
+                    return;
                 }
                 
-                // Сохранение
+                const transaction = {
+                    id: Date.now(),
+                    type,
+                    amount,
+                    category,
+                    description,
+                    date,
+                    created: new Date().toISOString()
+                };
+                
+                this.data.transactions.unshift(transaction);
                 this.saveData();
                 
-                // Обновление интерфейса
+                this.renderTransactions();
                 this.updateDashboard();
                 
-                // Очистка текстового поля
-                document.getElementById('diaryText').value = '';
+                document.getElementById('transactionAmount').value = '';
+                document.getElementById('transactionDescription').value = '';
                 
-                this.showNotification('Запись сохранена', 'success');
+                this.hideModal('addTransactionModal');
+                this.showNotification('Операция сохранена!', 'success');
             }
             
-            // ====== ПОИСК ======
             search(query) {
                 const searchResults = document.getElementById('searchResults');
                 
@@ -2530,7 +4141,6 @@
                 const lowerQuery = query.toLowerCase();
                 const results = [];
                 
-                // Поиск в задачах
                 this.data.tasks.forEach(task => {
                     if (task.title.toLowerCase().includes(lowerQuery) ||
                         task.description?.toLowerCase().includes(lowerQuery)) {
@@ -2544,7 +4154,6 @@
                     }
                 });
                 
-                // Поиск в конспектах
                 this.data.notes.forEach(note => {
                     if (note.subject.toLowerCase().includes(lowerQuery) ||
                         note.title.toLowerCase().includes(lowerQuery) ||
@@ -2559,7 +4168,6 @@
                     }
                 });
                 
-                // Поиск в транзакциях
                 this.data.transactions.forEach(transaction => {
                     if (transaction.description.toLowerCase().includes(lowerQuery) ||
                         transaction.category.toLowerCase().includes(lowerQuery)) {
@@ -2618,150 +4226,12 @@
                     searchResults.appendChild(resultElement);
                 });
             }
-            
-            // ====== НАСТРОЙКИ ======
-            handleSettingsAction(action) {
-                switch(action) {
-                    case 'export':
-                        this.exportData();
-                        break;
-                    case 'import':
-                        this.importData();
-                        break;
-                    case 'backup':
-                        this.createBackup();
-                        break;
-                    case 'clear':
-                        this.clearData();
-                        break;
-                }
-            }
-            
-            // Экспорт данных
-            exportData() {
-                const data = {
-                    tasks: this.data.tasks,
-                    notes: this.data.notes,
-                    transactions: this.data.transactions,
-                    diary: this.data.diary,
-                    exportDate: new Date().toISOString()
-                };
-                
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `smart-life-backup-${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                this.showNotification('Данные экспортированы', 'success');
-            }
-            
-            // Импорт данных
-            importData() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        try {
-                            const data = JSON.parse(e.target.result);
-                            
-                            // Подтверждение импорта
-                            if (confirm('Заменить текущие данные? Это действие нельзя отменить.')) {
-                                this.data.tasks = data.tasks || [];
-                                this.data.notes = data.notes || [];
-                                this.data.transactions = data.transactions || [];
-                                this.data.diary = data.diary || [];
-                                
-                                this.saveData();
-                                this.renderTasks();
-                                this.renderNotes();
-                                this.renderTransactions();
-                                this.updateDashboard();
-                                this.renderCalendar();
-                                
-                                this.showNotification('Данные импортированы', 'success');
-                            }
-                        } catch (error) {
-                            this.showNotification('Ошибка импорта файла', 'error');
-                        }
-                    };
-                    reader.readAsText(file);
-                };
-                
-                input.click();
-            }
-            
-            // Создать резервную копию
-            createBackup() {
-                this.saveData();
-                this.showNotification('Резервная копия создана', 'success');
-            }
-            
-            // Очистить все данные
-            clearData() {
-                if (confirm('Удалить ВСЕ данные? Это действие нельзя отменить.')) {
-                    this.data.tasks = [];
-                    this.data.notes = [];
-                    this.data.transactions = [];
-                    this.data.diary = [];
-                    
-                    this.saveData();
-                    this.renderTasks();
-                    this.renderNotes();
-                    this.renderTransactions();
-                    this.updateDashboard();
-                    this.renderCalendar();
-                    
-                    this.showNotification('Все данные удалены', 'success');
-                }
-            }
-            
-            // Показать уведомление
-            showNotification(message, type = 'info') {
-                const container = document.getElementById('notificationContainer');
-                const notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.textContent = message;
-                
-                // Цвет в зависимости от типа
-                if (type === 'error') {
-                    notification.style.background = '#ef4444';
-                } else if (type === 'warning') {
-                    notification.style.background = '#f59e0b';
-                } else if (type === 'success') {
-                    notification.style.background = '#10b981';
-                }
-                
-                container.appendChild(notification);
-                
-                // Автоматическое удаление через 3 секунды
-                setTimeout(() => {
-                    notification.style.animation = 'slideInRight 0.3s ease reverse';
-                    setTimeout(() => {
-                        if (notification.parentNode) {
-                            notification.parentNode.removeChild(notification);
-                        }
-                    }, 300);
-                }, 3000);
-            }
         }
 
-        // Инициализация приложения при загрузке страницы
+        // Инициализация приложения
         document.addEventListener('DOMContentLoaded', () => {
-            // Создаем и запускаем приложение
             window.app = new SmartLifeOrganizer();
             
-            // Предотвращаем масштабирование при двойном тапе
             let lastTouchEnd = 0;
             document.addEventListener('touchend', (event) => {
                 const now = Date.now();
@@ -2771,15 +4241,25 @@
                 lastTouchEnd = now;
             }, false);
             
-            // Устанавливаем сегодняшнюю дату в формах
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('transactionDate').value = today;
             document.getElementById('taskDueDate').value = today;
+            document.getElementById('goalDeadline').value = today;
             
-            // Показываем приветственное сообщение
-            setTimeout(() => {
-                window.app.showNotification('Добро пожаловать в Smart Life!', 'success');
-            }, 1000);
+            // Установка времени напоминания на ближайший час
+            const nextHour = new Date();
+            nextHour.setHours(nextHour.getHours() + 1);
+            nextHour.setMinutes(0);
+            document.getElementById('reminderDateTime').value = 
+                nextHour.toISOString().slice(0, 16);
+                
+            // Установка времени для привычек на 9 утра
+            document.getElementById('habitReminderTime').value = '09:00';
+            
+            // Запрашиваем разрешение на уведомления
+            if ("Notification" in window) {
+                Notification.requestPermission();
+            }
         });
     </script>
 </body>
